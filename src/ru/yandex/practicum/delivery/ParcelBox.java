@@ -1,3 +1,6 @@
+package ru.yandex.practicum.delivery;
+
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +13,10 @@ public class ParcelBox<T extends Parcel> {
         this.maxWeight = maxWeight;
         this.parcels = new ArrayList<>();
         this.currentWeight = 0;
+    }
+
+    public int getCurrentWeight() {
+        return currentWeight;
     }
 
     public boolean addParcel(T parcel) {

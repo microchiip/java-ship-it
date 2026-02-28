@@ -1,3 +1,5 @@
+package ru.yandex.practicum.delivery;
+
 //хрупкая
 public class FragileParcel extends Parcel implements Trackable {
     private static final int BASE_COST = 4;
