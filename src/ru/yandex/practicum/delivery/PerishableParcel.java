@@ -16,8 +16,9 @@ public class  PerishableParcel extends Parcel {
     }
 
     //испорчена?
-    public boolean isExpired(int currentDay){
-        return (currentDay - sendDay) <= timeToLive;
+    public boolean isExpired(int currentDay) {
+        // Посылка испорчена, если текущий день больше дня отправки + срок жизни
+        return currentDay > (sendDay + timeToLive);
     }
 
 }

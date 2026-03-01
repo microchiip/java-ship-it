@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+
+// Первая реализация switch была в ТЗ.
+// Лучше всегда выносить из switch все в отдельный метод, если в нем реализованна большая логика?
+
 public class DeliveryApp {
 
     private static final Scanner scanner = new Scanner(System.in);
@@ -221,67 +225,82 @@ public class DeliveryApp {
 
         switch (type) {
             case 1:
-                parcel = new StandardParcel(description, weight, address, sendDay);
-                System.out.println("\nСтандартная посылка успешно создана!");
-
-                System.out.println("Добавление посылки в коробку 'Cтандарт'.");
-
-                if (standardBox.addParcel((StandardParcel) parcel)) {
-                    System.out.println("Стандартная посылка помещена в коробку!");
-                } else {
-                    System.out.println("Посылка создана, но не помещена в коробку (превышен вес)");
-                }
+                parcel = addStandard(description, weight, address, sendDay);
                 break;
 
             case 2:
-                parcel = new FragileParcel(description, weight, address, sendDay);
-                System.out.println("\nХрупкая посылка успешно создана!");
-                trackableItems.add((Trackable) parcel);
-                System.out.println("Посылка добавлена в систему трекинга!");
-
-                System.out.println("Добавление посылки в коробку 'Хрупкое'.");
-                if (fragileBox.addParcel((FragileParcel) parcel)) {
-                    System.out.println("Хрупкая посылка помещена в коробку!");
-                } else {
-                    System.out.println("Посылка создана, но не помещена в коробку (превышен вес)");
-                }
+                parcel = addFragile(description, weight, address, sendDay);
                 break;
 
             case 3:
-                int timeToLive = 0;
-                while (true) {
-                    System.out.print("Введите срок годности: ");
-                    if (scanner.hasNextInt()) {
-                        timeToLive = scanner.nextInt();
-                        scanner.nextLine();
-
-                        if (timeToLive > 0) {
-                            break;
-                        } else {
-                            System.out.println("Error. Некорректное число.");
-                        }
-                    } else {
-                        System.out.println("Error. Вы ввели не число.");
-                        scanner.nextLine();
-                    }
-                }
-
-                parcel = new PerishableParcel(description, weight, address, sendDay, timeToLive);
-                System.out.println("\nСкоропортящаяся посылка успешно создана!");
-
-                System.out.println("Добавление посылки в коробку 'Скоропортящаяся'.");
-                if (perishableBox.addParcel((PerishableParcel) parcel)) {
-                    System.out.println("Скоропортящаяся посылка помещена в коробку!");
-                } else {
-                    System.out.println("Посылка создана, но не помещена в коробку (превышен вес)");
-                }
-
+                addPerishable(description, weight, address, sendDay);
                 break;
         }
         if (parcel != null) {
             allParcels.add(parcel);
             System.out.println("Посылка добавлена в список. Всего посылок: " + allParcels.size());
         }
+    }
+
+    private static Parcel addStandard(String description, int weight, String address, int sendDay){
+        Parcel parcel = new StandardParcel(description, weight, address, sendDay);
+        System.out.println("\nСтандартная посылка успешно создана!");
+
+        System.out.println("Добавление посылки в коробку 'Cтандарт'.");
+
+        if (standardBox.addParcel((StandardParcel) parcel)) {
+            System.out.println("Стандартная посылка помещена в коробку!");
+        } else {
+            System.out.println("Посылка создана, но не помещена в коробку (превышен вес)");
+        }
+        return parcel;
+    }
+
+    private static Parcel addFragile(String description, int weight, String address, int sendDay){
+        Parcel parcel = new FragileParcel(description, weight, address, sendDay);
+        System.out.println("\nХрупкая посылка успешно создана!");
+        trackableItems.add((Trackable) parcel);
+        System.out.println("Посылка добавлена в систему трекинга!");
+
+        System.out.println("Добавление посылки в коробку 'Хрупкое'.");
+        if (fragileBox.addParcel((FragileParcel) parcel)) {
+            System.out.println("Хрупкая посылка помещена в коробку!");
+        } else {
+            System.out.println("Посылка создана, но не помещена в коробку (превышен вес)");
+        }
+        return parcel;
+    }
+
+    private static Parcel addPerishable(String description, int weight, String address, int sendDay){
+        int timeToLive = 0;
+        while (true) {
+            System.out.print("Введите срок годности: ");
+            if (scanner.hasNextInt()) {
+                timeToLive = scanner.nextInt();
+                scanner.nextLine();
+
+                if (timeToLive > 0) {
+                    break;
+                } else {
+                    System.out.println("Error. Некорректное число.");
+                }
+            } else {
+                System.out.println("Error. Вы ввели не число.");
+                scanner.nextLine();
+            }
+        }
+
+        Parcel parcel = new PerishableParcel(description, weight, address, sendDay, timeToLive);
+        System.out.println("\nСкоропортящаяся посылка успешно создана!");
+
+        System.out.println("Добавление посылки в коробку 'Скоропортящаяся'.");
+        if (perishableBox.addParcel((PerishableParcel) parcel)) {
+            System.out.println("Скоропортящаяся посылка помещена в коробку!");
+        } else {
+            System.out.println("Посылка создана, но не помещена в коробку (превышен вес)");
+        }
+
+        return parcel;
     }
 
     private static void sendParcels() {
@@ -317,6 +336,9 @@ public class DeliveryApp {
     }
 
     private static void showBoxContents() {
+        final int MIN_PARCEL_TYPE = 1;
+        final int MAX_PARCEL_TYPE = 3;
+
         System.out.println("\nВыберите тип коробки:");
         System.out.println("1. Стандартные посылки");
         System.out.println("2. Хрупкие посылки");
@@ -329,9 +351,9 @@ public class DeliveryApp {
                 choice = scanner.nextInt();
                 scanner.nextLine();
 
-                if(choice >= 1 && choice <= 3) break;
+                if(choice >= MIN_PARCEL_TYPE && choice <= MAX_PARCEL_TYPE) break;
                 else {
-                    System.out.println("Error. Введите число от 1 до 3.");
+                    System.out.println("Error. Введите число от " + MIN_PARCEL_TYPE + " до " + MAX_PARCEL_TYPE + ".");
                 }
             }
             else {

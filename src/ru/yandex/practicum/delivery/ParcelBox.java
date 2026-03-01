@@ -35,11 +35,6 @@ public class ParcelBox<T extends Parcel> {
         return true;
     }
 
-    // это метод get и должен возвращать инфу(в данном случае содержимое коробки), для вывода использую printBoxInfo
-    //в задании: getAllParcels, чтобы получить все посылки из коробки.
-    //не очень понимаю, зачем нам этот метод, если нужно реализовать вывод содержимого.
-    //нам достаточно обычного метода (не get) или equals()
-    //это я чего-то не понимаю? если делать get, то обработка для вывода будет в main
     public List<T> getAllParcels() {
         return new ArrayList<>(parcels);
     }
@@ -58,8 +53,4 @@ public class ParcelBox<T extends Parcel> {
             System.out.println("Коробка пуста");
         }
     }
-
-
-
-
 }
